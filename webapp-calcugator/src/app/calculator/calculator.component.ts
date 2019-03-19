@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CalculatorState} from "./calculator.state";
 import {Observable} from "rxjs";
-import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
 import {CalculatorOperation} from "./calculator.operation";
 import {CalculatorStateModel} from "./calculator.state.model";
+import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
 
 @AutoUnsubscribe()
 @Component({
@@ -30,5 +30,8 @@ export class CalculatorComponent implements OnInit, OnDestroy
   {
   }
 
-
+  getStream()
+  {
+    return this.calculatorState$;
+  }
 }

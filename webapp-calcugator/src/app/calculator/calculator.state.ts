@@ -1,9 +1,11 @@
 import {Injectable} from "@angular/core";
 import {merge, Observable, Subject} from "rxjs";
-import {mergeMap, scan, shareReplay, startWith} from "rxjs/operators";
 import {CalculatorOperation} from "./calculator.operation";
 import {CalculatorService} from "./calculator.service";
 import {CalculatorStateModel} from "./calculator.state.model";
+import {mergeMap, pairwise, scan, shareReplay, startWith, tap, withLatestFrom} from "rxjs/operators";
+import {tag} from "rxjs-spy/operators";
+import {create} from "rxjs-spy";
 
 @Injectable()
 export class CalculatorState
@@ -11,23 +13,48 @@ export class CalculatorState
   currentInput$: Subject<string>;
   operationInput$: Subject<CalculatorOperation>;
 
+  lastInput$: Subject<CalculatorStateModel>;
+
+  operator$: Observable<CalculatorStateModel>;
   currentState$: Observable<CalculatorStateModel>;
 
-  constructor(calculatorService: CalculatorService)
+  constructor(private calculatorService: CalculatorService)
   {
     this.currentInput$ = new Subject<string>();
     this.operationInput$ = new Subject<CalculatorOperation>();
+    this.lastInput$ = new Subject<CalculatorStateModel>();
 
-    this.currentState$ = merge(this.currentInput$.pipe(startWith('0')), this.operationInput$)
-      .pipe(
-        scan((accumulate: CalculatorStateModel, newValueOrOperator: string | CalculatorOperation) =>
-               calculatorService.handleNewValueOrOperation(accumulate, newValueOrOperator),
-             CalculatorService.EMPTY_MODEL
-             ),
-        startWith(CalculatorService.EMPTY_MODEL),
-        mergeMap((stateModel: CalculatorStateModel) => calculatorService.handleOperationCall(stateModel)),
-        shareReplay(1)
-      );
+    this.operator$ = this.operationInput$.pipe(
+      startWith(CalculatorOperation.NONE), // at least one value for pairwise to start emitting
+      pairwise(),
+      withLatestFrom(this.lastInput$),
+      mergeMap(([[currentOperation, nextOperation], lastState]) =>
+               {
+                 return this.calculatorService.handleNewOperation(currentOperation, nextOperation, lastState);
+               }
+      ),
+      tag('operatorstream')
+    );
+
+    this.currentState$ = merge(this.currentInput$, this.operator$).pipe(
+      scan<string | CalculatorStateModel, CalculatorStateModel>(
+        (resultState: CalculatorStateModel, newValue: string | CalculatorStateModel) =>
+        {
+          return this.calculatorService.handleNewValue(resultState, newValue);
+        }, CalculatorService.EMPTY_MODEL),
+      startWith(CalculatorService.EMPTY_MODEL),
+      tap(value =>
+          {
+            console.log(value);
+            this.lastInput$.next(value)
+          }),
+      shareReplay(1),
+      tag('statestream')
+    );
+
+    const spy = create();
+    spy.log('operatorstream');
+    spy.log('statestream');
   }
 
   newInput(newValue: string)

@@ -3,120 +3,79 @@ import {CalculatorOperation} from "./calculator.operation";
 import {CalculatorStateModel} from "./calculator.state.model";
 import {HttpService} from "../services/http.service";
 import {Observable, of} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Injectable()
 export class CalculatorService
 {
   public static EMPTY_MODEL: CalculatorStateModel = {
-    currentDisplayValue: '',
-    previousDisplayValue: '',
-    desiredOperation: CalculatorOperation.NONE,
-    nextOperation: CalculatorOperation.NONE,
-    evaluate: false
+    currentDisplayValue: '0',
+    previousDisplayValue: ''
   };
+
+  public static DECIMAL: string = '.';
 
   constructor(private httpService: HttpService)
   {
 
   }
 
-  handleNewValueOrOperation(currentState: CalculatorStateModel, newValueOrOperation: string | CalculatorOperation): CalculatorStateModel
+  handleNewValue(currentState: CalculatorStateModel, newValue: string | CalculatorStateModel): CalculatorStateModel
   {
-    if (this.isOperation(newValueOrOperation))
+    if (typeof newValue === 'string')
     {
-      return this.handleOperation(currentState, newValueOrOperation);
+      return this.handleNewStringValue(currentState, newValue);
     }
-    else if (typeof newValueOrOperation === 'string')
-    {
-      return this.handleNewValue(currentState, newValueOrOperation);
-    }
-    throw new Error("not a value or known operation");
+
+    return newValue as CalculatorStateModel;
   }
 
-  handleOperation(currentState: CalculatorStateModel, operation: CalculatorOperation): CalculatorStateModel
+  handleNewStringValue(currentState: CalculatorStateModel, newValue: string): CalculatorStateModel
   {
-    switch (operation)
-    {
-    case CalculatorOperation.DECIMAL:
-      return this.handleDecimalOperator(currentState);
-    default:
-      return this.handleDefaultOperation(currentState, operation);
-    }
-  }
-
-  handleNewValue(currentState: CalculatorStateModel, newValue: string): CalculatorStateModel
-  {
-    if (currentState.currentDisplayValue === '0')
+    if (currentState.currentDisplayValue === '0' && newValue !== CalculatorService.DECIMAL)
     {
       return {
         currentDisplayValue: newValue,
-        previousDisplayValue: currentState.previousDisplayValue,
-        desiredOperation: currentState.desiredOperation,
-        nextOperation: currentState.nextOperation,
-        evaluate: false
+        previousDisplayValue: currentState.previousDisplayValue
       };
+    }
+    else if (newValue === CalculatorService.DECIMAL
+      && currentState.currentDisplayValue.indexOf(CalculatorService.DECIMAL) !== -1)
+    {
+      return currentState;
     }
 
     return {
       currentDisplayValue: '' + currentState.currentDisplayValue + newValue,
-      previousDisplayValue: currentState.previousDisplayValue,
-      desiredOperation: currentState.desiredOperation,
-      nextOperation: currentState.nextOperation,
-      evaluate: false
+      previousDisplayValue: currentState.previousDisplayValue
     };
   }
 
-  isOperation(valueOrOperation: string | CalculatorOperation): valueOrOperation is CalculatorOperation
+  handleNewOperation(currentOperation: CalculatorOperation, nextOperation: CalculatorOperation,
+    currentState: CalculatorStateModel): Observable<CalculatorStateModel>
   {
-    return Object.values(CalculatorOperation).includes(valueOrOperation);
+    if (currentOperation === CalculatorOperation.NONE || currentOperation === CalculatorOperation.EVALUATE)
+    {
+      return of({
+                  currentDisplayValue: '0',
+                  previousDisplayValue: currentState.currentDisplayValue
+                });
+    }
+    return this.handleOperationCall(currentState, currentOperation);
   }
 
-  handleDecimalOperator(currentState: CalculatorStateModel): CalculatorStateModel
+  handleOperationCall(stateModel: CalculatorStateModel, operation: CalculatorOperation): Observable<CalculatorStateModel>
   {
-    if (currentState.currentDisplayValue.indexOf(CalculatorOperation.DECIMAL) === -1)
-    {
-      return {
-        currentDisplayValue: currentState.currentDisplayValue + CalculatorOperation.DECIMAL,
-        previousDisplayValue: currentState.previousDisplayValue,
-        desiredOperation: currentState.desiredOperation,
-        nextOperation: currentState.nextOperation,
-        evaluate: false
-      };
-    }
-    return currentState;
-  }
-
-  handleDefaultOperation(currentState: CalculatorStateModel, operation: CalculatorOperation): CalculatorStateModel
-  {
-    if (!currentState.previousDisplayValue && currentState.previousDisplayValue !== '0')
-    {
-      // only the first time: update the previous value since no call to backend is made
-      return {
-        currentDisplayValue: '0',
-        previousDisplayValue: currentState.currentDisplayValue,
-        desiredOperation: currentState.nextOperation,
-        nextOperation: operation,
-        evaluate: false
-      };
-    }
-    return {
-      currentDisplayValue: currentState.currentDisplayValue,
-      previousDisplayValue: currentState.previousDisplayValue,
-      desiredOperation: currentState.nextOperation,
-      nextOperation: operation,
-      evaluate: true
-    };
-  }
-
-  handleOperationCall(stateModel: CalculatorStateModel): Observable<CalculatorStateModel>
-  {
-    if (!stateModel.evaluate)
-    {
-      return of(stateModel);
-    }
-    else
-    {
-      return this.httpService.performPutRequest('/api/calculator/', stateModel);
-    }
+    return this.httpService.performPutRequest<any>('/api/calculator/', {
+      firstValue: stateModel.previousDisplayValue,
+      secondValue: stateModel.currentDisplayValue,
+      operation: operation
+    }).pipe(map(result =>
+                {
+                  return {
+                    currentDisplayValue: result.secondValue,
+                    previousDisplayValue: result.firstValue
+                  };
+                }));
   }
 }

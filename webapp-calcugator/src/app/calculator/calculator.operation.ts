@@ -1,6 +1,5 @@
 export enum CalculatorOperation
 {
-  DECIMAL = ".",
   ADDITION = "+",
   SUBTRACTION = "-",
   MULTIPLICATION = "*",

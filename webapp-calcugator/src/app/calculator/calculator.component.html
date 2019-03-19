@@ -1,32 +1,32 @@
 <div class="container container--centered">
   <div class="calculator__input">
-    <p class="calculator__input--previous">{{(calculatorState$ | async).previousDisplayValue}}</p>
-    <p class="calculator__input--current">{{(calculatorState$ | async).currentDisplayValue}}</p>
+    <p class="calculator__input--previous">{{(getStream() | async).previousDisplayValue}}</p>
+    <p class="calculator__input--current">{{(getStream() | async).currentDisplayValue}}</p>
   </div>
   <div class="layout__grid">
     <div class="layout__row">
-      <app-calculator-button-number [digit]="1"></app-calculator-button-number>
-      <app-calculator-button-number [digit]="2"></app-calculator-button-number>
-      <app-calculator-button-number [digit]="3"></app-calculator-button-number>
+      <app-calculator-button-digit [digit]="1"></app-calculator-button-digit>
+      <app-calculator-button-digit [digit]="2"></app-calculator-button-digit>
+      <app-calculator-button-digit [digit]="3"></app-calculator-button-digit>
       <app-calculator-button-operation [operation]="OperationType.ADDITION"></app-calculator-button-operation>
     </div>
     <div class="layout__row">
-      <app-calculator-button-number [digit]="4"></app-calculator-button-number>
-      <app-calculator-button-number [digit]="5"></app-calculator-button-number>
-      <app-calculator-button-number [digit]="6"></app-calculator-button-number>
+      <app-calculator-button-digit [digit]="4"></app-calculator-button-digit>
+      <app-calculator-button-digit [digit]="5"></app-calculator-button-digit>
+      <app-calculator-button-digit [digit]="6"></app-calculator-button-digit>
       <app-calculator-button-operation [operation]="OperationType.SUBTRACTION"></app-calculator-button-operation>
     </div>
     <div class="layout__row">
-      <app-calculator-button-number [digit]="7"></app-calculator-button-number>
-      <app-calculator-button-number [digit]="8"></app-calculator-button-number>
-      <app-calculator-button-number [digit]="9"></app-calculator-button-number>
+      <app-calculator-button-digit [digit]="7"></app-calculator-button-digit>
+      <app-calculator-button-digit [digit]="8"></app-calculator-button-digit>
+      <app-calculator-button-digit [digit]="9"></app-calculator-button-digit>
       <app-calculator-button-operation [operation]="OperationType.MULTIPLICATION"></app-calculator-button-operation>
     </div>
     <div class="layout__row">
-      <app-calculator-button-number [digit]="0"></app-calculator-button-number>
-      <app-calculator-button-operation [operation]="OperationType.DECIMAL"></app-calculator-button-operation>
-      <app-calculator-button-operation [operation]="OperationType.DIVISION"></app-calculator-button-operation>
+      <app-calculator-button-digit [digit]="0"></app-calculator-button-digit>
+      <app-calculator-button-digit [digit]="'.'"></app-calculator-button-digit>
       <app-calculator-button-operation [operation]="OperationType.EVALUATE"></app-calculator-button-operation>
+      <app-calculator-button-operation [operation]="OperationType.DIVISION"></app-calculator-button-operation>
     </div>
   </div>
 </div>

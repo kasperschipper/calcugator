@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CalculatorOperation} from "../calculator/calculator.operation";
-import {CalculatorState} from "../calculator/calculator.state";
+import {CalculatorOperation} from "../calculator.operation";
+import {CalculatorState} from "../calculator.state";
 
 @Component({
              selector: 'app-calculator-button-operation',

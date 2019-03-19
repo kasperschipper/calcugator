@@ -11,9 +11,9 @@ public class CalculatorViewModelMapper implements ICalculatorViewModelMapper
     public Calculation mapFromViewModel(CalculationViewModel calculationViewModel)
     {
         Calculation calculation = new Calculation();
-        calculation.setFirstValue(Double.parseDouble(calculationViewModel.getPreviousDisplayValue()));
-        calculation.setSecondValue(Double.parseDouble(calculationViewModel.getCurrentDisplayValue()));
-        calculation.setOperation(calculationViewModel.getDesiredOperation());
+        calculation.setFirstValue(Double.parseDouble(calculationViewModel.getSecondValue()));
+        calculation.setSecondValue(Double.parseDouble(calculationViewModel.getFirstValue()));
+        calculation.setOperation(calculationViewModel.getOperation());
 
         return calculation;
     }
@@ -22,11 +22,9 @@ public class CalculatorViewModelMapper implements ICalculatorViewModelMapper
     public CalculationViewModel mapToViewModel(Double calculationResult, CalculationViewModel oldModel)
     {
         CalculationViewModel result = new CalculationViewModel();
-        result.setCurrentDisplayValue("0");
-        result.setPreviousDisplayValue(calculationResult.toString());
-        result.setDesiredOperation(oldModel.getDesiredOperation());
-        result.setNextOperation(oldModel.getNextOperation());
-        result.setEvaluate(false);
+        result.setFirstValue(calculationResult.toString());
+        result.setSecondValue("0");
+        result.setOperation(oldModel.getOperation());
         return result;
     }
 }

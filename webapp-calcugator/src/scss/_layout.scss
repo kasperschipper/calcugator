@@ -20,7 +20,7 @@
   &--card {
     height: calc(100% - #{$header-height} - 4rem);
     margin: 2rem;
-    overflow: hidden;
+    overflow-Y: scroll;
   }
 }
 

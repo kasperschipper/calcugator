@@ -1,12 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CalculatorState} from "../calculator/calculator.state";
+import {CalculatorState} from "../calculator.state";
 
 @Component({
-             selector: 'app-calculator-button-number',
-             templateUrl: './calculator-button-number.component.html',
-             styleUrls: ['./calculator-button-number.component.scss']
+             selector: 'app-calculator-button-digit',
+             templateUrl: './calculator-button-digit.component.html',
+             styleUrls: ['./calculator-button-digit.component.scss']
            })
-export class CalculatorButtonNumberComponent implements OnInit
+export class CalculatorButtonDigitComponent implements OnInit
 {
   @Input() digit: string;
 

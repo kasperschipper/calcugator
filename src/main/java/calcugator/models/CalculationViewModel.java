@@ -2,63 +2,39 @@ package calcugator.models;
 
 public class CalculationViewModel
 {
-    private String currentDisplayValue;
+    private String firstValue;
 
-    private String previousDisplayValue;
+    private String secondValue;
 
-    private CalculationOperation desiredOperation;
+    private CalculationOperation operation;
 
-    private CalculationOperation nextOperation;
-
-    private boolean evaluate;
-
-    public String getCurrentDisplayValue()
+    public String getFirstValue()
     {
-        return currentDisplayValue;
+        return firstValue;
     }
 
-    public void setCurrentDisplayValue(String currentDisplayValue)
+    public void setFirstValue(String firstValue)
     {
-        this.currentDisplayValue = currentDisplayValue;
+        this.firstValue = firstValue;
     }
 
-    public String getPreviousDisplayValue()
+    public String getSecondValue()
     {
-        return previousDisplayValue;
+        return secondValue;
     }
 
-    public void setPreviousDisplayValue(String previousDisplayValue)
+    public void setSecondValue(String secondValue)
     {
-        this.previousDisplayValue = previousDisplayValue;
+        this.secondValue = secondValue;
     }
 
-    public CalculationOperation getDesiredOperation()
+    public CalculationOperation getOperation()
     {
-        return desiredOperation;
+        return operation;
     }
 
-    public void setDesiredOperation(CalculationOperation desiredOperation)
+    public void setOperation(CalculationOperation operation)
     {
-        this.desiredOperation = desiredOperation;
-    }
-
-    public CalculationOperation getNextOperation()
-    {
-        return nextOperation;
-    }
-
-    public void setNextOperation(CalculationOperation nextOperation)
-    {
-        this.nextOperation = nextOperation;
-    }
-
-    public boolean isEvaluate()
-    {
-        return evaluate;
-    }
-
-    public void setEvaluate(boolean evaluate)
-    {
-        this.evaluate = evaluate;
+        this.operation = operation;
     }
 }
