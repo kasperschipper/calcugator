@@ -1,0 +1,9 @@
+.calculator__input {
+  border: solid 1px black;
+  text-align: right;
+  padding: 0.5em;
+
+  &--current {
+    font-size: 1.5em;
+  }
+}
