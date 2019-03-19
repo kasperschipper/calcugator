@@ -6,6 +6,7 @@ import {AppComponent} from './app.component';
 import {CalculatorModule} from "./calculator/calculator.module";
 import {HttpService} from "./services/http.service";
 import {HttpClientModule} from "@angular/common/http";
+import {CalculationsModule} from "./calculations/calculations.module";
 
 @NgModule({
             declarations: [
@@ -15,6 +16,7 @@ import {HttpClientModule} from "@angular/common/http";
               BrowserModule,
               AppRoutingModule,
               CalculatorModule,
+              CalculationsModule,
               HttpClientModule
             ],
             providers: [

@@ -1,8 +1,9 @@
 package calcugator.services;
 
-import calcugator.models.CalculationModel;
+import calcugator.models.CalculationViewModel;
+import calcugator.persistence.Calculation;
 
 public interface ICalculatorService
 {
-    CalculationModel calculate(CalculationModel calculation);
+    Double calculate(Calculation calculation);
 }

@@ -1,68 +1,59 @@
 package calcugator.services;
 
-import calcugator.models.CalculationModel;
+import calcugator.models.CalculationViewModel;
+import calcugator.persistence.Calculation;
+import calcugator.repositories.CalculationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CalculatorService implements ICalculatorService
 {
-    @Override
-    public CalculationModel calculate(CalculationModel calculation)
+    private CalculationRepository calculationRepository;
+
+    @Autowired
+    public CalculatorService(CalculationRepository calculationRepository)
     {
-        Double calculationResult = calculateResult(calculation);
-
-        CalculationModel result = createResultCalculation(calculation);
-
-        result.setPreviousDisplayValue(calculationResult.toString());
-
-        return result;
+        this.calculationRepository = calculationRepository;
     }
 
-    private Double calculateResult(CalculationModel calculation)
+    @Override
+    public Double calculate(Calculation calculation)
     {
-        switch (calculation.getDesiredOperation())
+        this.calculationRepository.save(calculation);
+
+        switch (calculation.getOperation())
         {
         case ADDITION:
-            return performAddition(calculation.getPreviousDisplayValue(), calculation.getCurrentDisplayValue());
+            return performAddition(calculation.getFirstValue(), calculation.getSecondValue());
         case SUBTRACTION:
-            return performSubtraction(calculation.getPreviousDisplayValue(), calculation.getCurrentDisplayValue());
+            return performSubtraction(calculation.getFirstValue(), calculation.getSecondValue());
         case MULTIPLICATION:
-            return performMultiplication(calculation.getPreviousDisplayValue(), calculation.getCurrentDisplayValue());
+            return performMultiplication(calculation.getFirstValue(), calculation.getSecondValue());
         case DIVISION:
-            return performDivision(calculation.getPreviousDisplayValue(), calculation.getCurrentDisplayValue());
+            return performDivision(calculation.getFirstValue(), calculation.getSecondValue());
         default:
             throw new IllegalArgumentException("invalid operation type requested");
         }
     }
 
-    // TODO rewrite these so parsing happens before operation
-    private Double performDivision(String firstValue, String secondValue)
+    private Double performDivision(Double firstValue, Double secondValue)
     {
-        return Double.parseDouble(firstValue) / Double.parseDouble(secondValue);
+        return firstValue / secondValue;
     }
 
-    private Double performMultiplication(String firstValue, String secondValue)
+    private Double performMultiplication(Double firstValue, Double secondValue)
     {
-        return Double.parseDouble(firstValue) * Double.parseDouble(secondValue);
+        return firstValue * secondValue;
     }
 
-    private Double performSubtraction(String firstValue, String secondValue)
+    private Double performSubtraction(Double firstValue, Double secondValue)
     {
-        return Double.parseDouble(firstValue) - Double.parseDouble(secondValue);
+        return firstValue - secondValue;
     }
 
-    private Double performAddition(String firstValue, String secondValue)
+    private Double performAddition(Double firstValue, Double secondValue)
     {
-        return Double.parseDouble(firstValue) + Double.parseDouble(secondValue);
-    }
-
-    private CalculationModel createResultCalculation(CalculationModel calculation)
-    {
-        CalculationModel result = new CalculationModel();
-        result.setCurrentDisplayValue("0");
-        result.setDesiredOperation(calculation.getDesiredOperation());
-        result.setNextOperation(calculation.getNextOperation());
-        result.setEvaluate(false);
-        return result;
+        return firstValue + secondValue;
     }
 }

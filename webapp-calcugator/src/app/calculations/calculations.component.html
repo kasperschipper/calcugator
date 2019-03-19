@@ -1,0 +1,12 @@
+<div class="container container--card">
+  <div class="layout__row">
+    <div class="col col__1of3">First value</div>
+    <div class="col col__1of3">Second value</div>
+    <div class="col col__1of3">Operation</div>
+  </div>
+  <div class="layout__row" *ngFor="let calculation of (calculations$ | async)">
+    <div class="col col__1of3">{{calculation.firstValue}}</div>
+    <div class="col col__1of3">{{calculation.secondValue}}</div>
+    <div class="col col__1of3">{{calculation.operation}}</div>
+  </div>
+</div>

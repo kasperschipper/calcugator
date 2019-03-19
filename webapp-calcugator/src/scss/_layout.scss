@@ -1,3 +1,9 @@
+@import "variables";
+
+.header {
+  height: 50px;
+}
+
 .container {
   padding: 2rem;
   background-color: white;
@@ -10,17 +16,31 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
+  &--card {
+    height: calc(100% - #{$header-height} - 4rem);
+    margin: 2rem;
+    overflow: hidden;
+  }
 }
 
 .layout__grid {
   margin: 1em 0;
   display: flex;
   flex-direction: column;
-
 }
 
 .layout__row {
   margin: 1em 0;
   display: flex;
   flex-direction: row;
+  position: relative;
+}
+
+.col {
+  padding: 0.5em;
+
+  &__1of3 {
+    width: 33%;
+  }
 }

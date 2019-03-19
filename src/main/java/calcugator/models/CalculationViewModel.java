@@ -1,6 +1,6 @@
 package calcugator.models;
 
-public class CalculationModel
+public class CalculationViewModel
 {
     private String currentDisplayValue;
 
